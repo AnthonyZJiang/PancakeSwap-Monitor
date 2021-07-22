@@ -72,11 +72,11 @@ class PCSMonitor:
         return newly_added_tokens
 
     def _handle_new_tokens(self, tokens: dict, server_time: int) -> None:
-        if len(tokens) < 0:
+        if tokens: 
+            self._saved_token_address.update(tokens)
+        else:
             self._logger.info(f'No new token found.')
-            return
         self._saved_token_time = server_time
-        self._saved_token_address.update(tokens)
         self._save_to_local_database()
 
     def _read_local_database(self) -> None:
