@@ -27,9 +27,10 @@ class Telegram:
             chat = response["result"]["chat"]
             user_full_name = chat["first_name"] + '_' + chat["last_name"]
             user_name = chat["username"] if "username" in chat else 'private'
-            self._logger.debug(f'Telegram chat [id={chat_id} user={user_full_name}@{user_name}] was notified.')
+            self._logger.debug(f'Telegram chat_id={chat_id} user={user_full_name}@{user_name} was notified.')
         else:
             self._logger.error(f'Telegram chat id {chat_id} was not notified.')
+            self._logger.error(f'Response: {response}')
 
     def send_message_to_all(self, message: str) -> None:
         for chat_id in self._chat_ids:

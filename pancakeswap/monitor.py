@@ -102,4 +102,4 @@ class PCSMonitor:
 
     def _save_to_local_database(self) -> None:
         json.dump({'updated_at': self._saved_token_time, 'data': list(self._saved_token_address)}, open(PCSMonitor.LOCAL_DATABASE_FILE, 'w+'))
-        self._logger.info(f'Local database has been updated successfully. Server time: {pcs_timestamp_to_str(self._saved_token_time)}, ')
+        self._logger.info(f'Local database has been updated successfully. Server time: {pcs_timestamp_to_str(self._saved_token_time)}.')
