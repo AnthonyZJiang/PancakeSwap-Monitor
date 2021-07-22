@@ -24,7 +24,10 @@ class Telegram:
     def send_message(self, chat_id: str, message: str) -> None:
         response = requests.post(url=self._send_message_request_url, data={'chat_id': {chat_id}, 'text': message}).json()
         if response['ok']:
-            self._logger.debug(f'Telegram chat [id={chat_id} user={response["result"]["chat"]["username"]}] was notified.')
+            chat = response["result"]["chat"]
+            user_full_name = chat["first_name"] + '_' + chat["last_name"]
+            user_name = chat["username"] if "username" in chat else 'private'
+            self._logger.debug(f'Telegram chat [id={chat_id} user={user_full_name}@{user_name}] was notified.')
         else:
             self._logger.error(f'Telegram chat id {chat_id} was not notified.')
 
