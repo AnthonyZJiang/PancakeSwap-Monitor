@@ -9,6 +9,7 @@ from helpers.telegram import Telegram
 
 
 PCS_API = 'https://api.pancakeswap.info/api/tokens'
+API_UPDATE_INTERVAL = 300
 
 def pcs_timestamp_to_str(timestamp: int) -> str:
     return datetime.fromtimestamp(timestamp/1000).strftime("%Y-%m-%d %H:%M:%S")
@@ -30,7 +31,12 @@ class PCSMonitor:
                 continue
             server_time = data['updated_at']
             if server_time <= self._prev_server_time:
-                time.sleep(1)
+                t_minus = (API_UPDATE_INTERVAL - time.time() + server_time/1000)
+                if t_minus < 0:
+                    t_minus = 1
+                else:
+                    self._logger.info(f'Taking a nap of {int(t_minus/60)}min {int(t_minus%60)}s while waiting for the next server update.')
+                time.sleep(t_minus)
                 continue
             self._logger.info(f'Server updated. Server time: {pcs_timestamp_to_str(server_time)}.')
             self._prev_server_time = server_time
@@ -102,4 +108,6 @@ class PCSMonitor:
 
     def _save_to_local_database(self) -> None:
         json.dump({'updated_at': self._saved_token_time, 'data': list(self._saved_token_address)}, open(PCSMonitor.LOCAL_DATABASE_FILE, 'w+'))
-        self._logger.info(f'Local database has been updated successfully. Server time: {pcs_timestamp_to_str(self._saved_token_time)}.')
+        msg = f'Local database has been updated successfully. Server time: {pcs_timestamp_to_str(self._saved_token_time)}.'
+        self._logger.info(msg)
+        self._telegram.send_message_to_admin(msg)

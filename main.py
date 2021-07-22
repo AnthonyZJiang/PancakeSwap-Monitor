@@ -5,9 +5,10 @@ import os
 from helpers import initiate_logger, Telegram
 from pancakeswap import PCSMonitor
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 initiate_logger()
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.info(f'PancakeSwap Monitor v{VERSION}')
 
 prev_server_time = 0
