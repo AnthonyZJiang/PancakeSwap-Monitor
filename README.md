@@ -39,3 +39,6 @@ python -m pip install -r requirements.txt
 - Ask all your users to search and start the chat channel with user_msg_bot
 - (optional) Ask your admin to search and start the chat channel with admin_msg_bot
 - Run `main.py`
+
+## Changelog
+See [CHANGELOG](CHANGELOG.md) for details.
