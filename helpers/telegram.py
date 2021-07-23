@@ -3,12 +3,14 @@ import logging
 
 
 class Telegram:
-    def __init__(self, bot_token: str, admin_id: str = None) -> None:
+    TG_BOT_API = 'https://api.telegram.org/bot'
+
+    def __init__(self, user_bot_token: str, admin_bot_token: str = None, admin_id: str = None) -> None:
         self._logger = logging.getLogger(__name__)
-        self._bot_token = bot_token
+        self._bot_token_user = user_bot_token
+        self._bot_token_admin = admin_bot_token or user_bot_token
         self.admin_id = admin_id
         self._chat_ids = []
-        self._send_message_request_url = f'https://api.telegram.org/bot{self._bot_token}/sendMessage'
 
     def add_chat_id(self, chat_id: str) -> None:
         self._chat_ids.append(chat_id)
@@ -21,8 +23,8 @@ class Telegram:
         if chat_id in self._chat_ids:
             self._chat_ids.remove(chat_id)
 
-    def send_message(self, chat_id: str, message: str) -> None:
-        response = requests.post(url=self._send_message_request_url, data={'chat_id': {chat_id}, 'text': message}).json()
+    def send_message(self, chat_id: str, message: str, bot_token: str = None) -> None:
+        response = self._post_telegram_bot_api(data={'chat_id': {chat_id}, 'text': message}, bot_token=bot_token)
         if response['ok']:
             chat = response["result"]["chat"]
             user_full_name = chat["first_name"] + '_' + chat["last_name"]
@@ -32,23 +34,28 @@ class Telegram:
             self._logger.error(f'Telegram chat id {chat_id} was not notified.')
             self._logger.error(f'Response: {response}')
 
-    def send_message_to_all(self, message: str) -> None:
+    def send_message_to_users(self, message: str) -> None:
         for chat_id in self._chat_ids:
             self.send_message(chat_id, message)
 
-    def send_greetings_to_all(self, message: str = None) -> None:
+    def send_greetings_to_users(self, message: str = None) -> None:
         if not message:
             message = 'Pancakeswap Monitor is up running and monitoring.'
-        self.send_message_to_all(message)
+        self.send_message_to_users(message)
 
-    def send_failure_message_to_all(self, message: str = None) -> None:
+    def send_failure_message_to_users(self, message: str = None) -> None:
         if not message:
-            message = 'Opps, Pancakeswap Monitor stopped working!'
-        self.send_failure_message_to_all(message)
+            message = 'Opps, Pancakeswap Monitor has stopped working! We are investigating the issue and you will be notified once it is up and running again. Thank you for being patient with us.'
+        self.send_failure_message_to_users(message)
 
     def send_message_to_admin(self, messaage: str) -> None:
         if self.admin_id:
-            self.send_message(self.admin_id, messaage)
+            self.send_message(self.admin_id, messaage, bot_token=self._bot_token_admin)
+
+    def _post_telegram_bot_api(self, data: dict, bot_token: str = None, method: str = 'sendMessage') -> dict:
+        if not bot_token:
+            bot_token = self._bot_token_user
+        return requests.post(url=f'{Telegram.TG_BOT_API}{bot_token}/{method}', data=data).json()
 
     @staticmethod
     def token_to_message(token: dict) -> str:

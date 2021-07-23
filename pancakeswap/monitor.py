@@ -71,7 +71,7 @@ class PCSMonitor:
         newly_added_tokens = []
         for new_token_key in new_token_keys:
             if new_token_key not in self._saved_token_address:
-                self._telegram.send_message_to_all(f'New token found: {Telegram.token_to_message(new_tokens_data[new_token_key])}')
+                self._telegram.send_message_to_users(f'New token found: {Telegram.token_to_message(new_tokens_data[new_token_key])}')
                 self._logger.info(f'New token found: {new_tokens_data[new_token_key]}')
                 newly_added_tokens.append(new_token_key)
 
