@@ -8,7 +8,7 @@ from datetime import datetime
 from helpers.telegram import Telegram
 
 
-PCS_API = 'https://api.pancakeswap.info/api/tokens'
+PCS_API = 'https://api.pancakeswap.info/api/v2/tokens'
 API_UPDATE_INTERVAL = 300
 
 def pcs_timestamp_to_str(timestamp: int) -> str:
