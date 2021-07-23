@@ -1,14 +1,13 @@
 import logging
 import os
-import requests
 import json
 import time
 from datetime import datetime
+from requests import ConnectionError, HTTPError
 
 from helpers.telegram import Telegram
+from .pcsapi import PancakeSwapAPI
 
-
-PCS_API = 'https://api.pancakeswap.info/api/v2/tokens'
 API_UPDATE_INTERVAL = 300
 
 def pcs_timestamp_to_str(timestamp: int) -> str:
@@ -21,6 +20,7 @@ class PCSMonitor:
         self._logger = logging.getLogger(__name__)
         self._telegram = telegram
         self._prev_server_time = 0
+        self._pcs_api = PancakeSwapAPI()
 
     def start_monitor(self) -> None:
         self._initiate_monitor()
@@ -54,16 +54,16 @@ class PCSMonitor:
 
     def _request_data(self) -> dict:
         try:
-            response = requests.get(PCS_API)
+            data = self._pcs_api.tokens()
         except ConnectionError:
             self._logger.error('Fail to connect to PancakeSwap server.', exc_info=True)
             return None
-        if response.status_code != 200:
-            self._logger.error(f'PancakeSwap server responded with status code {response.status_code}.')
-            self._logger.error(f'Full response: {response.text}')
+        except HTTPError as err:
+            self._logger.error(f'PancakeSwap server responded with status code {err.response.status_code}.')
+            self._logger.error(f'Full response: {err.response.text}')
             return None
         self._logger.debug('PancakeSwap server responded with status code 200.')
-        return json.loads(response.text)
+        return data
 
     def _get_new_tokens(self, new_tokens_data: dict) -> list:
         new_token_keys = new_tokens_data.keys()

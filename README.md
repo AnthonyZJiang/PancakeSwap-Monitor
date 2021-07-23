@@ -42,3 +42,7 @@ python -m pip install -r requirements.txt
 
 ## Changelog
 See [CHANGELOG](CHANGELOG.md) for details.
+
+## License
+See [LICENSE](LICENSE.md) for details.<br/>
+Also see [LICENSE-3RD-PARTY](LICENSE-3RD-PARTY.md) for third party licenses.
