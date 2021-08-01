@@ -14,13 +14,16 @@ def pcs_timestamp_to_str(timestamp: int) -> str:
     return datetime.fromtimestamp(timestamp/1000).strftime("%Y-%m-%d %H:%M:%S")
 
 class PCSMonitor:
-    LOCAL_DATABASE_FILE = os.path.join('.cache','pcs_token.json')
+    CACHE_DIRECTORY = '.cache'
+    LOCAL_DATABASE_FILE = os.path.join(CACHE_DIRECTORY,'pcs_token.json')
 
     def __init__(self, telegram: Telegram) -> None:
         self._logger = logging.getLogger(__name__)
         self._telegram = telegram
         self._prev_server_time = 0
         self._pcs_api = PancakeSwapAPI()
+        if not os.path.exists(PCSMonitor.CACHE_DIRECTORY):
+            os.mkdir(PCSMonitor.CACHE_DIRECTORY)
 
     def start_monitor(self) -> None:
         self._initiate_monitor()
