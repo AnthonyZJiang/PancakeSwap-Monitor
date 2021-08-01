@@ -4,6 +4,9 @@ import os
 
 LOG_FOLDER = 'logs'
 def initiate_logger():
+    if not os.path.exists(LOG_FOLDER):
+        os.makedirs(LOG_FOLDER)
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
    
