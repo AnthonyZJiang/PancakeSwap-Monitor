@@ -1,6 +1,6 @@
 # PancakeSwap monitor
 
-Informs you when a new crypto currency token is available for trading on [PancakeSwap](https://pancakeswap.com/)].
+Informs you when a new crypto currency token is available for trading on [PancakeSwap](https://pancakeswap.com/).
 
 ## Features
 
@@ -28,7 +28,7 @@ python -m pip install -r requirements.txt
 ## Usage
 
 - [Create a Telegram bot](https://core.telegram.org/bots#3-how-do-i-create-a-bot) for sending messages to your users (later referred to as user_msg_bot)
-- (optional) Create a second Telegram bot if you want to a dedicated bot to send admin messages (later referred to as admin_msg_bot)
+- (optional) Create a second Telegram bot if you want a dedicated bot to send admin messages (later referred to as admin_msg_bot)
 - Go to the directory where the script is located
 - Edit `credentials/telegram_bot.json.example`:
   - Add your user_msg_bot information in `user_msg_bot`
@@ -39,6 +39,12 @@ python -m pip install -r requirements.txt
 - Ask all your users to search and start the chat channel with user_msg_bot
 - (optional) Ask your admin to search and start the chat channel with admin_msg_bot
 - Run `main.py`
+
+## Messages
+
+- Admin bot will push a message whenever Pancakeswap updates its database and the bot captures the update. Normally, the database is updated every 5 minutes.
+- Admin bot will push all exceptions.
+- User bot will push a message whenever a new token is available on Pancakeswap.
 
 ## Changelog
 See [CHANGELOG](CHANGELOG.md) for details.
