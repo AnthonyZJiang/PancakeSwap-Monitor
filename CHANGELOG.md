@@ -1,5 +1,11 @@
 **24/07/2021**
 
+    v1.2.1
+    - Fixed .cache and logs folders not found error.
+    - Cleaned up API functions.
+
+**24/07/2021**
+
     v1.2.0
     - Better PancakeSwap API handling. Credit to @scottburlovich.
     - Now uses v2 API.

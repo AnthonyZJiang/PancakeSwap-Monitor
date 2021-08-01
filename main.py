@@ -5,7 +5,7 @@ import os
 from helpers import initiate_logger, Telegram
 from pancakeswap import PCSMonitor
 
-VERSION = '1.2.0'
+VERSION = '1.2.1'
 
 def main():
     initiate_logger()
