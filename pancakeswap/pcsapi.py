@@ -21,12 +21,6 @@ class PancakeSwapAPI:
         retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[502, 503, 504])
         self.session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self):
-        self.session.close()
-
     def __get(self, request_url: str):
         """
         GET request wrapper
@@ -36,14 +30,6 @@ class PancakeSwapAPI:
         response.raise_for_status()
         return json.loads(response.content.decode('utf-8'))
 
-    def summary(self):
-        """
-        Returns data for the top ~1000 PancakeSwap pairs, sorted by reserves.
-        :return: Dict
-        """
-        url = f"{self.base_url}summary"
-        return self.__get(url)
-
     def tokens(self, address: str = None):
         """
         If address parameter is specified, returns the token information, based on address.
@@ -52,19 +38,9 @@ class PancakeSwapAPI:
         :return: Dict
         """
         if address:
-            # Trim any whitespace from address
             address = address.replace(' ', '')
-            # Validate provided address matches ERC20 format - does not check if the address is valid on chain!
             if not re.match("^0x([A-Fa-f0-9]{40})$", address):
                 raise ValueError(f"Provided address hash ({address}) is not in a valid format.")
 
         url = f"{self.base_url}tokens{'/' + address if address is not None else ''}"
-        return self.__get(url)
-
-    def pairs(self):
-        """
-        Returns data for the top ~1000 PancakeSwap pairs, sorted by reserves.
-        :return: Dict
-        """
-        url = f"{self.base_url}pairs"
         return self.__get(url)
